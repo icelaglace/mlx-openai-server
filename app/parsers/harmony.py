@@ -8,6 +8,15 @@ from openai_harmony import (
     Role
 )
 
+_encoding = None
+
+def _get_harmony_encoding():
+    """Return cached Harmony encoding for GPT-OSS."""
+    global _encoding
+    if _encoding is None:
+        _encoding = load_harmony_encoding(HarmonyEncodingName.HARMONY_GPT_OSS)
+    return _encoding
+
 class ChannelType(Enum):
     """Enumeration of harmony channel types."""
 
@@ -25,7 +34,7 @@ class HarmonyParser:
     """Parser for Harmony encoding."""
 
     def __init__(self):
-        self.encoding = load_harmony_encoding(HarmonyEncodingName.HARMONY_GPT_OSS)
+        self.encoding = _get_harmony_encoding()
         self.parser = StreamableParser(self.encoding, role=Role.ASSISTANT)
 
         self.end_tool_chunk = "<|call|>"
